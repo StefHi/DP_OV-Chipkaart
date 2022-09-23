@@ -1,8 +1,11 @@
-package P2;
+package P2andP3;
 
-import P2.domain.Reiziger;
-import P2.interfaces.ReizigerDAO;
-import P2.persistancy.ReizigerDAOPsql;
+import P2andP3.domain.Adres;
+import P2andP3.domain.Reiziger;
+import P2andP3.interfaces.AdresDAO;
+import P2andP3.interfaces.ReizigerDAO;
+import P2andP3.persistancy.AdresDAOPsql;
+import P2andP3.persistancy.ReizigerDAOPsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,7 +20,9 @@ public class Main {
         try {
             connection = getConnection();
             ReizigerDAO reizigerDAO = new ReizigerDAOPsql(connection);
+            AdresDAO adresDAO = new AdresDAOPsql(connection, reizigerDAO);
             testReizigerDAO(reizigerDAO);
+            testAdresDAO(adresDAO, reizigerDAO);
             closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,5 +71,41 @@ public class Main {
         rdao.delete(sietske);
         reizigers = rdao.findAll();
         System.out.println(reizigers.size() + " reizigers");
+    }
+
+    private static void testAdresDAO(AdresDAO adao, ReizigerDAO rdao) throws SQLException {
+        System.out.println("\n---------- Test AdresDAO -------------");
+
+        // Haal alle adressen op uit de database
+        List<Adres> adresList = adao.findAll();
+        System.out.println("[Test] AdresDAO.findAll() geeft de volgende adressen:");
+        for (Adres a : adresList) {
+            System.out.println(a);
+        }
+        System.out.println();
+
+        // Maak een nieuwe reiziger met adres aan em persisteer deze in de database
+        String gbdatum = "1981-03-14";
+        Reiziger sietske = new Reiziger(77, "S", "", "Boers", java.sql.Date.valueOf(gbdatum));
+        rdao.save(sietske);
+        System.out.print("[Test] Eerst " + adresList.size() + " reizigers, na ReizigerDAO.save() ");
+        Adres adrSietske = new Adres(6, "1234AB", "1", "eenstraat", "utrecht", rdao.findById(77));
+        adao.save(adrSietske);
+        adresList = adao.findAll();
+        System.out.println(adresList.size() + " adressen\n");
+
+        // Update adres
+        adrSietske.setHuisnummer("2");
+        System.out.print("[Test] Eerst was het huisnummer van de reiziger " + adao.findByReiziger(sietske).getHuisnummer() +
+                                 ", ");
+        adao.update(adrSietske);
+        System.out.println("na AdresDAO.update() " + adao.findByReiziger(sietske).getHuisnummer() + "\n");
+
+        // Delete adres
+        System.out.print("[Test] Eerst " + adresList.size() + " reizigers, na ReizigerDAO.delete() ");
+        adao.delete(adrSietske);
+        adresList = adao.findAll();
+        System.out.println(adresList.size() + " adressen");
+        rdao.delete(sietske);
     }
 }

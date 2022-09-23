@@ -1,7 +1,7 @@
-package P2.persistancy;
+package P2andP3.persistancy;
 
-import P2.domain.Reiziger;
-import P2.interfaces.ReizigerDAO;
+import P2andP3.domain.Reiziger;
+import P2andP3.interfaces.ReizigerDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

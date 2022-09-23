@@ -1,6 +1,6 @@
-package P2.interfaces;
+package P2andP3.interfaces;
 
-import P2.domain.Reiziger;
+import P2andP3.domain.Reiziger;
 
 import java.sql.SQLException;
 import java.util.List;

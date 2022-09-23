@@ -1,4 +1,4 @@
-package P2.domain;
+package P2andP3.domain;
 
 import java.sql.Date;
 
