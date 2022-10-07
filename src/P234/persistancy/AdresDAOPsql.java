@@ -1,9 +1,9 @@
-package P2andP3.persistancy;
+package P234.persistancy;
 
-import P2andP3.domain.Adres;
-import P2andP3.domain.Reiziger;
-import P2andP3.interfaces.AdresDAO;
-import P2andP3.interfaces.ReizigerDAO;
+import P234.domain.Adres;
+import P234.domain.Reiziger;
+import P234.interfaces.AdresDAO;
+import P234.interfaces.ReizigerDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
