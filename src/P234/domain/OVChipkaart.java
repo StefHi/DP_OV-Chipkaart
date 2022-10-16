@@ -1,6 +1,7 @@
 package P234.domain;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class OVChipkaart {
     private int kaartnummer;
@@ -58,8 +59,23 @@ public class OVChipkaart {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OVChipkaart that = (OVChipkaart) o;
+        return kaartnummer == that.kaartnummer && klasse == that.klasse && Double.compare(that.saldo,
+                                                                                          saldo) == 0 && Objects.equals(
+                geldig_tot, that.geldig_tot) && Objects.equals(reiziger, that.reiziger);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kaartnummer, geldig_tot, klasse, saldo, reiziger);
+    }
+
+    @Override
     public String toString() {
-        return String.format("#%d: geldig tot %s, klasse %d, saldo €%s van reiziger %s", kaartnummer, geldig_tot,
-                             klasse, saldo, reiziger.getNaam());
+        return String.format("#%d: geldig tot %s, klasse %d, saldo €%s", kaartnummer, geldig_tot,
+                             klasse, saldo);
     }
 }

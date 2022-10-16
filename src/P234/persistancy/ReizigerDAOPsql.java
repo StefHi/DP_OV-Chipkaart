@@ -1,5 +1,7 @@
 package P234.persistancy;
 
+import P234.domain.Adres;
+import P234.domain.OVChipkaart;
 import P234.domain.Reiziger;
 import P234.interfaces.ReizigerDAO;
 
@@ -12,9 +14,13 @@ import java.util.List;
 
 public class ReizigerDAOPsql implements ReizigerDAO {
     private Connection conn;
+    private AdresDAOPsql adao;
+    private OVChipkaartDAOPsql odao;
 
     public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
+        this.adao = new AdresDAOPsql(conn, this);
+        this.odao = new OVChipkaartDAOPsql(conn, this);
     }
 
     @Override
@@ -27,6 +33,18 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         pst.setString(3, reiziger.getTussenvoegsel());
         pst.setString(4, reiziger.getAchternaam());
         pst.setDate(5, reiziger.getGeboortedatum());
+
+        Adres adres = reiziger.getAdres();
+        if (adres != null) {
+            adao.save(adres);
+        }
+
+        List<OVChipkaart> ovChipkaarts = reiziger.getOvChipkaarts();
+        if (!ovChipkaarts.isEmpty()) {
+            for (OVChipkaart ovChipkaart : ovChipkaarts) {
+                odao.save(ovChipkaart);
+            }
+        }
 
         return pst.executeUpdate() > 0;
     }
@@ -42,6 +60,33 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         pst.setDate(4, reiziger.getGeboortedatum());
         pst.setInt(5, reiziger.getId());
 
+        Adres adres = reiziger.getAdres();
+        Adres savedAdres = adao.findByReiziger(reiziger);
+        if (adres == null && savedAdres != null) {
+            adao.delete(savedAdres);
+        } else if (adres != null && savedAdres == null) {
+            adao.save(adres);
+        } else if (adres != null && !adres.equals(savedAdres)) {
+            adao.update(adres);
+        }
+
+        List<OVChipkaart> ovChipkaarts = reiziger.getOvChipkaarts();
+        List<OVChipkaart> savedOvChipkaarts = odao.findByReiziger(reiziger);
+        if (!ovChipkaarts.isEmpty()) {
+            for (OVChipkaart ovChipkaart : ovChipkaarts) {
+                if (!savedOvChipkaarts.contains(ovChipkaart)) {
+                    odao.save(ovChipkaart);
+                }
+            }
+        }
+        if (!savedOvChipkaarts.isEmpty()) {
+            for (OVChipkaart savedOvChipkaart : savedOvChipkaarts) {
+                if (!ovChipkaarts.contains(savedOvChipkaart)) {
+                    odao.delete(savedOvChipkaart);
+                }
+            }
+        }
+
         return pst.executeUpdate() > 0;
     }
 
@@ -50,6 +95,18 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         String q = "DELETE FROM reiziger WHERE reiziger_id = ?";
         PreparedStatement pst = conn.prepareStatement(q);
         pst.setInt(1, reiziger.getId());
+
+        Adres adres = reiziger.getAdres();
+        if (adres != null) {
+            adao.delete(adres);
+        }
+
+        List<OVChipkaart> ovChipkaarts = reiziger.getOvChipkaarts();
+        if (!ovChipkaarts.isEmpty()) {
+            for (OVChipkaart ovChipkaart : ovChipkaarts) {
+                odao.delete(ovChipkaart);
+            }
+        }
 
         return pst.executeUpdate() > 0;
     }

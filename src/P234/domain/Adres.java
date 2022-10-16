@@ -1,5 +1,7 @@
 package P234.domain;
 
+import java.util.Objects;
+
 public class Adres {
     private int id;
     private String postcode;
@@ -66,8 +68,19 @@ public class Adres {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Adres adres = (Adres) o;
+        return id == adres.id && Objects.equals(postcode, adres.postcode) && Objects.equals(huisnummer,
+                                                                                            adres.huisnummer) && Objects.equals(
+                straat, adres.straat) && Objects.equals(woonplaats, adres.woonplaats) && Objects.equals(
+                reiziger, adres.reiziger);
+    }
+
+    @Override
     public String toString() {
-        return String.format("Reiziger %s, Adres (#%d %s %s %s %s)", reiziger.toString(), id, postcode, straat,
+        return String.format("Adres (#%d %s %s %s %s)", id, postcode, straat,
                              huisnummer, woonplaats);
     }
 }

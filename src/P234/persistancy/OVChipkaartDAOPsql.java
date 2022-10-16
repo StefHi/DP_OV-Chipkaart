@@ -3,6 +3,7 @@ package P234.persistancy;
 import P234.domain.OVChipkaart;
 import P234.domain.Reiziger;
 import P234.interfaces.OVChipkaartDAO;
+import P234.interfaces.ReizigerDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +15,11 @@ import java.util.List;
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     private Connection conn;
+    private ReizigerDAO rdao;
 
-    public OVChipkaartDAOPsql(Connection conn) {
+    public OVChipkaartDAOPsql(Connection conn, ReizigerDAO rdao) {
         this.conn = conn;
+        this.rdao = rdao;
     }
 
     @Override
@@ -70,6 +73,25 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     rs.getInt("klasse"),
                     rs.getDouble("saldo"),
                     reiziger
+            );
+            ovChipkaarts.add(ovChipkaart);
+        }
+        return ovChipkaarts;
+    }
+
+    @Override
+    public List<OVChipkaart> findAll() throws SQLException {
+        String q = "SELECT * FROM ov_chipkaart";
+        PreparedStatement pst = conn.prepareStatement(q);
+        ResultSet rs = pst.executeQuery();
+        List<OVChipkaart> ovChipkaarts = new ArrayList<>();
+        while (rs.next()) {
+            OVChipkaart ovChipkaart = new OVChipkaart(
+                    rs.getInt("kaart_nummer"),
+                    rs.getDate("geldig_tot"),
+                    rs.getInt("klasse"),
+                    rs.getDouble("saldo"),
+                    rdao.findById(rs.getInt("reiziger_id"))
             );
             ovChipkaarts.add(ovChipkaart);
         }

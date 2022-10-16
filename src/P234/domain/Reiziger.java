@@ -11,6 +11,7 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
     private List<OVChipkaart> ovChipkaarts;
+    private Adres adres;
 
     public Reiziger(int id, String voorletters, String tussenvoegsels, String achternaam, Date geboortedatum) {
         this.id = id;
@@ -80,8 +81,33 @@ public class Reiziger {
         return false;
     }
 
+    public boolean removeOvChipkaart (OVChipkaart ovChipkaart) {
+        if (ovChipkaarts.contains(ovChipkaart)) {
+            return ovChipkaarts.remove(ovChipkaart);
+        }
+        return false;
+    }
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
+
     @Override
     public String toString() {
-        return String.format("#%d: %s (%s)", id, getNaam(), geboortedatum);
+        StringBuilder s;
+        s = new StringBuilder(String.format("Reiziger: #%d: %s (%s)", id, getNaam(), geboortedatum));
+        if (adres != null) {
+            s.append("\n").append(adres.toString());
+        }
+        if (!ovChipkaarts.isEmpty()) {
+            for (OVChipkaart ovChipkaart : ovChipkaarts) {
+                s.append("\n").append(ovChipkaart.toString());
+            }
+        }
+        return s.toString();
     }
 }

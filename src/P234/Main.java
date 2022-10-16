@@ -24,7 +24,7 @@ public class Main {
             connection = getConnection();
             ReizigerDAO reizigerDAO = new ReizigerDAOPsql(connection);
             AdresDAO adresDAO = new AdresDAOPsql(connection, reizigerDAO);
-            OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPsql(connection);
+            OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPsql(connection, reizigerDAO);
             testReizigerDAO(reizigerDAO);
             testAdresDAO(adresDAO, reizigerDAO);
             testOVChipkaartDAO(ovChipkaartDAO, reizigerDAO);
@@ -139,7 +139,7 @@ public class Main {
         System.out.print("[Test] Eerst was het saldo van de reiziger " + odao.findByReiziger(reiziger).get(3).getSaldo() +
                                  ", ");
         odao.update(ovChipkaart);
-        System.out.println("na AdresDAO.update() " + odao.findByReiziger(reiziger).get(3).getSaldo() + "\n");
+        System.out.println("na OvChipkaartDAO.update() " + odao.findByReiziger(reiziger).get(3).getSaldo() + "\n");
 
         // delete ov-chipkaart
         System.out.print("[Test] Eerst " + ovChipkaarts.size() + " OV-Chipkaarten voor B van Rijn, na OVChipkaartDAO" +
