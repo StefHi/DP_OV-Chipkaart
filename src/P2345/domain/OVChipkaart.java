@@ -1,6 +1,8 @@
-package P234.domain;
+package P2345.domain;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class OVChipkaart {
@@ -9,6 +11,7 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
     private Reiziger reiziger;
+    private List<Product> products;
 
     public OVChipkaart(int kaartnummer, Date geldig_tot, int klasse, double saldo, Reiziger reiziger) {
         this.kaartnummer = kaartnummer;
@@ -16,6 +19,7 @@ public class OVChipkaart {
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
+        this.products = new ArrayList<>();
     }
 
     public int getKaartnummer() {
@@ -58,6 +62,29 @@ public class OVChipkaart {
         this.reiziger = reiziger;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public boolean addProduct (Product product) {
+        if (!products.contains(product)) {
+            products.add(product);
+            return product.addKaartnummer(kaartnummer);
+        }
+        return false;
+    }
+
+    public boolean removeProduct(Product product) {
+        if (products.contains(product)) {
+            return products.remove(product) && product.removekaartnummer(kaartnummer);
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,13 +96,16 @@ public class OVChipkaart {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(kaartnummer, geldig_tot, klasse, saldo, reiziger);
-    }
-
-    @Override
     public String toString() {
-        return String.format("#%d: geldig tot %s, klasse %d, saldo €%s", kaartnummer, geldig_tot,
-                             klasse, saldo);
+        StringBuilder s;
+        s = new StringBuilder(String.format("#%d: geldig tot %s, klasse %d, saldo €%s", kaartnummer, geldig_tot,
+                                            klasse, saldo));
+        if (!products.isEmpty()) {
+            for (Product product : products) {
+                s.append("\n").append(product.toString());
+            }
+        }
+
+        return s.toString();
     }
 }

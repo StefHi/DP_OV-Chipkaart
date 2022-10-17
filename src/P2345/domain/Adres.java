@@ -1,4 +1,4 @@
-package P234.domain;
+package P2345.domain;
 
 import java.util.Objects;
 

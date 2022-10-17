@@ -1,9 +1,10 @@
-package P234.persistancy;
+package P2345.persistancy;
 
-import P234.domain.OVChipkaart;
-import P234.domain.Reiziger;
-import P234.interfaces.OVChipkaartDAO;
-import P234.interfaces.ReizigerDAO;
+import P2345.domain.OVChipkaart;
+import P2345.domain.Product;
+import P2345.domain.Reiziger;
+import P2345.interfaces.OVChipkaartDAO;
+import P2345.interfaces.ReizigerDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,6 +34,17 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         pst.setDouble(4, ovChipkaart.getSaldo());
         pst.setInt(5, ovChipkaart.getReiziger().getId());
 
+        String q2 = "INSERT INTO ov_chipkaart_product(kaart_nummer, product_nummer) VALUES(?, ?)";
+        PreparedStatement pst2 = conn.prepareStatement(q2);
+        List< Product> products = ovChipkaart.getProducts();
+        if (!products.isEmpty()) {
+            for (Product product : products) {
+                pst2.setInt(1, ovChipkaart.getKaartnummer());
+                pst2.setInt(2, product.getNummer());
+                pst2.executeUpdate();
+            }
+        }
+
         return pst.executeUpdate() > 0;
     }
 
@@ -47,6 +59,22 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         pst.setInt(4, ovChipkaart.getReiziger().getId());
         pst.setInt(5, ovChipkaart.getKaartnummer());
 
+        String q2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?";
+        PreparedStatement pst2 = conn.prepareStatement(q2);
+        pst2.setInt(1, ovChipkaart.getKaartnummer());
+        pst2.executeUpdate();
+
+        String q3 = "INSERT INTO ov_chipkaart_product(kaart_nummer, product_nummer) VALUES(?, ?)";
+        PreparedStatement pst3 = conn.prepareStatement(q3);
+        List<Product> products = ovChipkaart.getProducts();
+        if (!products.isEmpty()) {
+            for (Product product : products) {
+                pst3.setInt(1, ovChipkaart.getKaartnummer());
+                pst3.setInt(2, product.getNummer());
+                pst3.executeUpdate();
+            }
+        }
+
         return pst.executeUpdate() > 0;
     }
 
@@ -55,6 +83,11 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         String q = "DELETE FROM ov_chipkaart WHERE kaart_nummer = ?";
         PreparedStatement pst = conn.prepareStatement(q);
         pst.setInt(1, ovChipkaart.getKaartnummer());
+
+        String q2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?";
+        PreparedStatement pst2 = conn.prepareStatement(q2);
+        pst2.setInt(1, ovChipkaart.getKaartnummer());
+        pst2.executeUpdate();
 
         return pst.executeUpdate() > 0;
     }

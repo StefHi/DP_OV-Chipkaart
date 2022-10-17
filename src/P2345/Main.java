@@ -1,14 +1,14 @@
-package P234;
+package P2345;
 
-import P234.domain.Adres;
-import P234.domain.OVChipkaart;
-import P234.domain.Reiziger;
-import P234.interfaces.AdresDAO;
-import P234.interfaces.OVChipkaartDAO;
-import P234.interfaces.ReizigerDAO;
-import P234.persistancy.AdresDAOPsql;
-import P234.persistancy.OVChipkaartDAOPsql;
-import P234.persistancy.ReizigerDAOPsql;
+import P2345.domain.Adres;
+import P2345.domain.OVChipkaart;
+import P2345.domain.Reiziger;
+import P2345.interfaces.AdresDAO;
+import P2345.interfaces.OVChipkaartDAO;
+import P2345.interfaces.ReizigerDAO;
+import P2345.persistancy.AdresDAOPsql;
+import P2345.persistancy.OVChipkaartDAOPsql;
+import P2345.persistancy.ReizigerDAOPsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

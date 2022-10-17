@@ -1,9 +1,9 @@
-package P234.persistancy;
+package P2345.persistancy;
 
-import P234.domain.Adres;
-import P234.domain.OVChipkaart;
-import P234.domain.Reiziger;
-import P234.interfaces.ReizigerDAO;
+import P2345.domain.Adres;
+import P2345.domain.OVChipkaart;
+import P2345.domain.Reiziger;
+import P2345.interfaces.ReizigerDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

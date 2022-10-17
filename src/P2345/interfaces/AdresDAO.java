@@ -1,7 +1,7 @@
-package P234.interfaces;
+package P2345.interfaces;
 
-import P234.domain.Adres;
-import P234.domain.Reiziger;
+import P2345.domain.Adres;
+import P2345.domain.Reiziger;
 
 import java.sql.SQLException;
 import java.util.List;
