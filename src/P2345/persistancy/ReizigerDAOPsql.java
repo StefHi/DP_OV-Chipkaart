@@ -126,8 +126,16 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     rs.getString("achternaam"),
                     rs.getDate("geboortedatum")
             );
-        }
+            List<OVChipkaart> ovChipkaarts = odao.findByReiziger(reiziger);
+            if (ovChipkaarts != null) {
+                reiziger.setOvChipkaarts(ovChipkaarts);
+            }
 
+            Adres adres = adao.findByReiziger(reiziger);
+            if (adres != null) {
+                reiziger.setAdres(adres);
+            }
+        }
         return reiziger;
     }
 
@@ -158,6 +166,14 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     rs.getDate("geboortedatum")
             );
             reizigerList.add(reiziger);
+
+            List<OVChipkaart> ovChipkaarts = odao.findByReiziger(reiziger);
+            reiziger.setOvChipkaarts(ovChipkaarts);
+
+            Adres adres = adao.findByReiziger(reiziger);
+            if (adres != null) {
+                reiziger.setAdres(adres);
+            }
         }
 
         return reizigerList;

@@ -89,14 +89,21 @@ public class ProductDAOPsql implements ProductDAO {
 
     private List<Product> getProducts(ResultSet rs) throws SQLException {
         List<Product> products = new ArrayList<>();
+        String q = "SELECT kaart_nummer FROM ov_chipkaart_product WHERE product_nummer = ?";
         while (rs.next()) {
             Product product = new Product(
                     rs.getInt("product_nummer"),
                     rs.getString("naam"),
-                    rs.getString("bescrhijving"),
+                    rs.getString("beschrijving"),
                     rs.getDouble("prijs")
             );
             products.add(product);
+            PreparedStatement ovChipkaartStatement = conn.prepareStatement(q);
+            ovChipkaartStatement.setInt(1, product.getNummer());
+            ResultSet ovChipkaartResultSet = ovChipkaartStatement.executeQuery();
+            while (ovChipkaartResultSet.next()) {
+                product.addKaartnummer(ovChipkaartResultSet.getInt("kaart_nummer"));
+            }
         }
         return products;
     }

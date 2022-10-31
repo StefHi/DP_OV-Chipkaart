@@ -17,10 +17,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     private Connection conn;
     private ReizigerDAO rdao;
+    private ProductDAOPsql pdao;
 
     public OVChipkaartDAOPsql(Connection conn, ReizigerDAO rdao) {
         this.conn = conn;
         this.rdao = rdao;
+        this.pdao = new ProductDAOPsql(conn, this);
     }
 
     @Override
@@ -34,14 +36,10 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         pst.setDouble(4, ovChipkaart.getSaldo());
         pst.setInt(5, ovChipkaart.getReiziger().getId());
 
-        String q2 = "INSERT INTO ov_chipkaart_product(kaart_nummer, product_nummer) VALUES(?, ?)";
-        PreparedStatement pst2 = conn.prepareStatement(q2);
-        List< Product> products = ovChipkaart.getProducts();
+        List<Product> products = pdao.findByOVChipkaart(ovChipkaart);
         if (!products.isEmpty()) {
             for (Product product : products) {
-                pst2.setInt(1, ovChipkaart.getKaartnummer());
-                pst2.setInt(2, product.getNummer());
-                pst2.executeUpdate();
+                pdao.save(product);
             }
         }
 
@@ -59,19 +57,10 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         pst.setInt(4, ovChipkaart.getReiziger().getId());
         pst.setInt(5, ovChipkaart.getKaartnummer());
 
-        String q2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?";
-        PreparedStatement pst2 = conn.prepareStatement(q2);
-        pst2.setInt(1, ovChipkaart.getKaartnummer());
-        pst2.executeUpdate();
-
-        String q3 = "INSERT INTO ov_chipkaart_product(kaart_nummer, product_nummer) VALUES(?, ?)";
-        PreparedStatement pst3 = conn.prepareStatement(q3);
-        List<Product> products = ovChipkaart.getProducts();
+        List<Product> products = pdao.findByOVChipkaart(ovChipkaart);
         if (!products.isEmpty()) {
             for (Product product : products) {
-                pst3.setInt(1, ovChipkaart.getKaartnummer());
-                pst3.setInt(2, product.getNummer());
-                pst3.executeUpdate();
+                pdao.update(product);
             }
         }
 
@@ -107,7 +96,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     rs.getDouble("saldo"),
                     reiziger
             );
+            ovChipkaart.setProducts(pdao.findByOVChipkaart(ovChipkaart));
             ovChipkaarts.add(ovChipkaart);
+
         }
         return ovChipkaarts;
     }
@@ -126,6 +117,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     rs.getDouble("saldo"),
                     rdao.findById(rs.getInt("reiziger_id"))
             );
+            ovChipkaart.setProducts(pdao.findByOVChipkaart(ovChipkaart));
             ovChipkaarts.add(ovChipkaart);
         }
         return ovChipkaarts;
